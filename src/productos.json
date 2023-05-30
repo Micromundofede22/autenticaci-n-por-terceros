@@ -1,0 +1,29 @@
+[
+	{
+		"id": 1,
+		"title": "Berlín",
+		"description": "terrario abierto",
+		"price": 3500,
+		"code": 12,
+		"stock": 20,
+		"thumbnail": "http"
+	},
+	{
+		"id": 2,
+		"title": "Fancia",
+		"description": "terrario abierto",
+		"price": 8500,
+		"code": 16,
+		"stock": 20,
+		"thumbnail": "http"
+	},
+	{
+		"id": 4,
+		"title": "Argentina",
+		"description": "terrario abierto",
+		"price": 9000,
+		"code": 16,
+		"stock": 20,
+		"thumbnail": "http"
+	}
+]
