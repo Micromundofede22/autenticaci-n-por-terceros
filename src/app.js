@@ -10,7 +10,7 @@ app.get("/products", async(req, res)=>{
     let limite = req.query.limite
     const productLimitados = await manager.getProduct()
 
-    const prueba = productLimitados.filter(producto => producto.id <= Number(limite))
+    const prueba= productLimitados.slice(0, Number(limite))
   
     if(!limite) res.send(await manager.getProduct())
     else{
