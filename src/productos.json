@@ -4,16 +4,16 @@
 		"title": "Berlín",
 		"description": "terrario abierto",
 		"price": 3500,
-		"code": 12,
+		"code": "12",
 		"stock": 20,
 		"thumbnail": "http"
 	},
 	{
 		"id": 2,
 		"title": "Fancia",
-		"description": "terrario abierto",
+		"description": "actualizado",
 		"price": 8500,
-		"code": 16,
+		"code": "16",
 		"stock": 20,
 		"thumbnail": "http"
 	},
@@ -22,8 +22,18 @@
 		"title": "Argentina",
 		"description": "terrario abierto",
 		"price": 9000,
-		"code": 16,
+		"code": "17",
 		"stock": 20,
 		"thumbnail": "http"
+	},
+	{
+		"id": 5,
+		"title": "España",
+		"description": "terrario abierto",
+		"code": "004a",
+		"price": 5000,
+		"status": true,
+		"stock": 20,
+		"category": "terrario"
 	}
 ]
