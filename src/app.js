@@ -13,5 +13,5 @@ app.use('/products', productRouter)
 app.use('/carts', cartRouter)
 
 // express escucha atento en puerto 8080
-app.listen(8080, ()=>console.log("server up"))
+app.listen(8080, ()=>console.log("Server up"))
 
