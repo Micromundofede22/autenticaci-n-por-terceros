@@ -9,11 +9,16 @@ productRouter.get("/", async (req, res) => {
     const productLimitados = await manager.getProduct()
     const prueba = productLimitados.slice(0, Number(limite))
 
-    if (!limite) res.send(await manager.getProduct())
+    if (!limite){
+        req.app.get('socketio').emit('updateProducts',await manager.getProducts())
+        res.send(await manager.getProduct())
+        
+    } 
     else if (limite < 0) {
         res.status(406).json({ message: "El número es inválido" })
     } else {
         res.json({ prueba })
+        
     }
 })
 
@@ -33,6 +38,7 @@ productRouter.post('/', async (req, res) => {
         return res.status(400).json({ message: "Faltan campos" })
     } else {
         await manager.addProduct(product.title, product.description, product.code, product.price, product.status, product.stock, product.category, product.thumbnails)
+        req.app.get("socketio").emit("updateProducts", await manager.getProduct())
         return res.status(201).json({ message: 'Producto agregado' })
     }
 })
@@ -44,6 +50,7 @@ productRouter.put("/:pid", async (req, res) => {
     if (producto === "error") {
         return res.status(400).json({ message: "Faltan campos" })
     } else {
+        req.app.get("socketio").emit("updateProducts", await manager.getProduct())
         return res.status(200).json({ message: "Producto actualizado" })
     }
 })
@@ -54,6 +61,7 @@ productRouter.delete("/:pid", async (req, res)=>{
     if (productoEliminado ==="error") {
          return res.status(400).json({ message: "Producto no encontrado" })
     } else {
+        req.app.get('socketio').emit('updateProducts',await manager.getProduct())
         return res.status(200).json({ message:  `Producto con id: ${id} eliminado` })
        
     }

@@ -1,14 +1,5 @@
 [
 	{
-		"id": 1,
-		"title": "Berlín",
-		"description": "terrario abierto",
-		"price": 3500,
-		"code": "12",
-		"stock": 20,
-		"thumbnail": "http"
-	},
-	{
 		"id": 2,
 		"title": "Fancia",
 		"description": "actualizado",
@@ -27,13 +18,23 @@
 		"thumbnail": "http"
 	},
 	{
-		"id": 5,
-		"title": "España",
-		"description": "terrario abierto",
-		"code": "004a",
-		"price": 5000,
+		"id": 6,
+		"title": "inventado",
+		"description": "inventado",
+		"code": "0054",
+		"price": 7899,
 		"status": true,
-		"stock": 20,
+		"stock": 80,
+		"category": "terrario"
+	},
+	{
+		"id": 7,
+		"title": "modificauuu",
+		"description": "inventado",
+		"code": "0054",
+		"price": 7899,
+		"status": true,
+		"stock": 80,
 		"category": "terrario"
 	}
 ]

@@ -1,0 +1,11 @@
+<h2>Lista productos Real Time websocket</h2>
+<hr/>
+<div id="div">
+    {{#each products}}
+    <li id="li">{{this.title}}</li>
+    {{/each}}
+</div>
+
+
+<script src="/socket.io/socket.io.js" ></script>
+    <script src="/js/index.js"></script>
