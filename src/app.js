@@ -29,21 +29,22 @@ app.use("/chat", routerChat)
 
 try {
     await mongoose.connect("mongodb+srv://fedecoder:fedecoder@cluster0.irwwxpb.mongodb.net/ecommers")
-    const serverHTTP = app.listen(8080, () => console.log("Server up"))
-    const io = new Server(serverHTTP)
-    app.set("socketio", io)
+    const serverHTTP = app.listen(8080, () => console.log("Server up")) //inica servidor http
+    const io = new Server(serverHTTP) // instancia servidor socketio y enlaza al server http
+    app.set("socketio", io) //creo objeto con el servidor io asi lo uso en toda la app
 
-    const messages = []
 
-    io.on('connection', socket => { //servidor escucha cuando llega una nueva conexion
+    io.on('connection', async (socket) => { //servidor escucha cuando llega una nueva conexion
+        let messages = (await messagesModel.find()) ? await messagesModel.find() : []
+
         socket.broadcast.emit('alerta') //es una 3era emisión que avisa a todos menos a quien se acaba de conectar. (las otras dos son socket.emit y io.emit) io es el servidor y socket el cliente
         socket.emit('logs', messages) //solo emite a ese cliente el historial, (no a todos, sino se repetiria el historial)
         socket.on('message', data => { //cuando cliente me haga llegar un mensaje, lo pusheo
-            messages.push(data)
+            messages.push(data);
+            messagesModel.create(messages);
             io.emit('logs', messages) // y el servidor io emite a todos el historial completo
         })
     })
-
 } catch (err) {
     console.log(err.message)
 }
@@ -51,15 +52,9 @@ try {
 
 
 
-
-
-
-
-
-
 // io.on("connection", socket =>{
 //     console.log("nuevo cliente")
 //     socket.on('products', data =>{
-//         io.emit('updateProducts',data)
+//     io.emit('updateProducts',data)
 //     })
 // })
