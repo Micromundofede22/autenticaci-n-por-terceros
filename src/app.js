@@ -7,9 +7,10 @@ import viewsRouter from "./routers/views.Router.js"
 import mongoose from "mongoose"
 import multerRouter from "./routers/multer.Router.js"
 import routerChat from "./routers/chat.Router.js"
+import { messagesModel } from "./dao/models/message.model.js";
 
 
-const app= express()
+const app = express()
 
 //configuracion del motor de plantillas
 app.engine('handlebars', handlebars.engine())
@@ -17,7 +18,7 @@ app.set('views', './views')
 app.set('view engine', 'handlebars')
 
 app.use(express.json()) //para que mi servidor pueda recibir json del cliente
-app.use(express.urlencoded({extended:true})) //para que mi servidor pueda recibir json que llegan por formulario desde el cliente
+app.use(express.urlencoded({ extended: true })) //para que mi servidor pueda recibir json que llegan por formulario desde el cliente
 app.use(express.static("./public"))
 
 app.use("/post", multerRouter)
@@ -26,10 +27,10 @@ app.use('/api/carts', cartRouter)
 app.use("/handleproducts", viewsRouter)
 app.use("/chat", routerChat)
 
-try{
+try {
     await mongoose.connect("mongodb+srv://fedecoder:fedecoder@cluster0.irwwxpb.mongodb.net/ecommers")
-    const serverHTTP= app.listen(8080, ()=>console.log("Server up"))
-    const io= new Server(serverHTTP)
+    const serverHTTP = app.listen(8080, () => console.log("Server up"))
+    const io = new Server(serverHTTP)
     app.set("socketio", io)
 
     const messages = []
@@ -43,7 +44,7 @@ try{
         })
     })
 
-}catch(err){
+} catch (err) {
     console.log(err.message)
 }
 
