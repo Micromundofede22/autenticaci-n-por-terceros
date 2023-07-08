@@ -41,14 +41,17 @@ try {
         socket.emit('logs', messages) //solo emite a ese cliente el historial, (no a todos, sino se repetiria el historial)
         socket.on('message', data => { //cuando cliente me haga llegar un mensaje, lo pusheo
             messages.push(data);
+
             messagesModel.create(messages);
             io.emit('logs', messages) // y el servidor io emite a todos el historial completo
         })
+
     })
+
+   
 } catch (err) {
     console.log(err.message)
 }
-
 
 
 

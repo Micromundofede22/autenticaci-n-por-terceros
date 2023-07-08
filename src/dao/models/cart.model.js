@@ -1,21 +1,28 @@
 import mongoose from "mongoose";
 
-const cartsCollection= "carts";
 
-// el carrito products, es un array de documentos que contiene los productos
-const cartsSchema= new mongoose.Schema({
-    products: {
+const cartsSchema = new mongoose.Schema({
+    products: {                                         //products de tipo array, que contiene subdocumentos
+
         type: [{
-            // esto es para que mongoose no le cree un id al documento, ya que el id se lo ponemos nosotros
-            _id: false,
-            // objectId es un tipo de dato, al igual que boolean o number 
-            product: mongoose.ObjectId,
+
+            product: {                                     //cada product es un documento
+                _id: false,                                // esto es para que mongoose no le cree un id al documento, ya que el id se lo ponemos nosotros
+                type: mongoose.Schema.Types.ObjectId,      //para que se muestren todas las propiedades del documento product dentro del carrito
+                ref: `products`                           //aquí van a ir los datos de cada product
+            },
             quantity: Number
+
         }],
-        default:[]
+        default: [],
+        _id: false
     }
 })
 
+// cartsSchema.pre("findOne", function(){            //los this solo se leen en funciones tradicionales
+//     this.populate("products.product")
+// })
+
 mongoose.set("strictQuery", false)
 
-export const cartsModel= mongoose.model(cartsCollection, cartsSchema)
+export const cartsModel = mongoose.model("carts", cartsSchema)
