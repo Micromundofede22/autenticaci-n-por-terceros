@@ -5,24 +5,49 @@ const productRouter = Router()
 
 // busqueda por query
 productRouter.get("/", async (req, res) => {
-    try{
+    try {
         let limite = req.query.limite ? req.query.limite : 10
-        let page= req.query.page ?  req.query.page : 1
-        const valor= req.query
-        
+        let page = req.query.page ? req.query.page : 1
+        const status = req.query.status 
+        const category = req.query.category 
 
-        // console.log(valor)
-        
-        const result= await productModel.paginate( {valor},
+
+        const result = await productModel.paginate(
+            (status && category)
+                ? { status: status, category: category}
+                : {}
+
+            ,
             (limite && page)
-            ? {limit: limite, page:page}
-            : {page:1}
+                ? { limit: limite, page: page }
+                : { page: 1 }
         )
-        res.status(200).json({status: "success", payload:result})
+
+        result.prevLink = result.hasPrevPage
+            ? `/api/products?page=${result.prevPage}&limite=${limite}`
+            : ``;
+
+        result.nextLink = result.hasNextPage
+            ? `/api/products?page=${result.nextPage}&limite=${limite}`
+            : ``
+
+
+        res.status(200).json({
+            status: "success",
+            payload: result,
+            totalPages: result.totalPages,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage,
+            page: result.page,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage,
+            prevLink: result.prevLink,
+            nextLink: result.nextLink
+        })
         // const result= await productModel.find().limit(limite).lean().exec()
         req.app.get('socketio').emit('updateProducts', await productModel.find().limit(limite))
-    }catch(err){
-        res.status(500).json({status: "error", error: err.message})
+    } catch (err) {
+        res.status(500).json({ status: "error", error: err.message })
     }
 })
 
@@ -39,7 +64,7 @@ productRouter.get("/:pid", async (req, res) => {
             req.app.get("socketio").emit("updateProducts", await productModel.find())
         }
     } catch (err) {
-            res.status(500).json({status: "error", error: err.message})
+        res.status(500).json({ status: "error", error: err.message })
     }
 })
 
@@ -47,42 +72,42 @@ productRouter.post('/', async (req, res) => {
     try {
         const product = req.body
         const newProduct = await productModel.create(product)
-            res.status(201).json({ status: "success", payload: newProduct })
-            req.app.get("socketio").emit("updateProducts", await productModel.find())
+        res.status(201).json({ status: "success", payload: newProduct })
+        req.app.get("socketio").emit("updateProducts", await productModel.find())
     } catch (err) {
         res.status(500).json({ status: "error", error: err.message })
     }
 })
 
 productRouter.put("/:pid", async (req, res) => {
-try{
-    const id= req.params.pid
-    const newData= req.body
-    const result= await productModel.findByIdAndUpdate(id, newData, {returnDocument: "after"})
+    try {
+        const id = req.params.pid
+        const newData = req.body
+        const result = await productModel.findByIdAndUpdate(id, newData, { returnDocument: "after" })
 
-    if (result === null) {
-        res.status(404).json({status: "error", error: "Not found"})
-    } else {
-        res.status(200).json({status: "success", payload: result})
-        req.app.get("socketio").emit("updateProducts", await productModel.find())
+        if (result === null) {
+            res.status(404).json({ status: "error", error: "Not found" })
+        } else {
+            res.status(200).json({ status: "success", payload: result })
+            req.app.get("socketio").emit("updateProducts", await productModel.find())
+        }
+    } catch (err) {
+        res.status(500).json({ status: "error", error: err.message })
     }
-}catch(err){
-    res.status(500).json({status: "error", error: err.message})
-}
 })
 
 productRouter.delete("/:pid", async (req, res) => {
-    try{
-        const id= req.params.pid
-        const result= await productModel.findByIdAndDelete(id)
+    try {
+        const id = req.params.pid
+        const result = await productModel.findByIdAndDelete(id)
         if (result == null) {
-            res.status(404).json({status: "error", error: "Not found"})
+            res.status(404).json({ status: "error", error: "Not found" })
         } else {
-            res.status(200).json({status: "success", payload: result})
+            res.status(200).json({ status: "success", payload: result })
             req.app.get("socketio").emit("updateProducts", await productModel.find())
         }
-    }catch(err){
-        res.status(500).json({status:"error", error: err.message})
+    } catch (err) {
+        res.status(500).json({ status: "error", error: err.message })
     }
 })
 
