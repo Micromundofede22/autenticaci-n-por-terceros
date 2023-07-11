@@ -19,7 +19,7 @@ const cartsSchema = new mongoose.Schema({
     }
 })
 
-// cartsSchema.pre("findOne", function(){            //los this solo se leen en funciones tradicionales
+// cartsSchema.post("findOne", function(){            //los this solo se leen en funciones tradicionales
 //     this.populate("products.product")
 // })
 

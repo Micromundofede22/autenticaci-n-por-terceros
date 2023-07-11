@@ -4,7 +4,7 @@ import { cartsModel } from "../dao/models/cart.model.js"
 
 const cartRouter = Router()
 
-
+// CREA CARRITO
 cartRouter.post('/', async (req, res) => {
     try {
         const newCart = req.body
@@ -15,6 +15,7 @@ cartRouter.post('/', async (req, res) => {
     }
 })
 
+// ME TRAE EL CARRITO
 cartRouter.get("/:cid", async (req, res) => {
     try {
         const id = req.params.cid
@@ -29,6 +30,7 @@ cartRouter.get("/:cid", async (req, res) => {
     }
 })
 
+// AGREGA AL CARRITO
 cartRouter.post("/:cid/product/:pid", async (req, res) => {
     try {
         const cid = req.params.cid;
@@ -55,19 +57,58 @@ cartRouter.post("/:cid/product/:pid", async (req, res) => {
 }
 })
 
+// ELIMINA 1 SOLO PRODUCTO
 cartRouter.delete("/:cid/product/:pid", async(req, res)=>{
     try {
         const cid= req.params.cid
         const pid= req.params.pid
         let cart= await cartsModel.findById(cid)
         
-        cart.products.filter((prod)=> prod._id != "64a061ab2407571397ff7ca0")
-        console.log(cart)
+        const productIndex= cart.products.findIndex(item => item.product == pid)
+
+        cart.products.splice(productIndex, 1)
+        // console.log(cart)
         await cartsModel.updateOne({_id: cid}, cart)
 
         const result= await cartsModel.findById(cid).populate("products.product")
 
         res.status(200).json({status: "success", payload: result})
+    } catch (err) {
+        res.status(500).json({ status: "error", error: err.message})
+    }
+})
+
+// ELIMINA TODOS LOS PRODUCTOS
+cartRouter.delete("/:cid", async(req,res)=>{
+    try {
+        const cid= req.params.cid
+        await cartsModel.updateOne({_id: cid}, {products: []})
+        const result= await cartsModel.findById(cid).populate("products.product")
+        res.status(200).json({status: "success", payload:result})
+    } catch (err) {
+        res.status(500).json({ status: "error", error: err.message})
+    }
+})
+
+// ACTUALIZO CANTIDADES
+cartRouter.put("/:cid/product/:pid", async (req, res)=>{
+    try {
+        const cid= req.params.cid
+        const pid= req.params.pid
+        const data= req.body
+        
+        const valor= data.quantity //extraigo el valor de quantity
+        const cart= await cartsModel.findById(cid)
+        cart.products.map((data)=>{
+            if (data.product == pid) {
+                data.quantity = valor
+            }
+        })
+      
+        await cartsModel.updateOne({_id: cid}, cart )
+        const result= await cartsModel.findById(cid).populate("products.product")
+        res.status(200).json({status: "success", payload: result})
+
     } catch (err) {
         res.status(500).json({ status: "error", error: err.message})
     }
