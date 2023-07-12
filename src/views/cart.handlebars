@@ -1,0 +1,24 @@
+<div>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Fotografía</th>
+                <th>Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each cartProducts}}
+            <tr>
+                <td>{{this.title}}</td>
+                <td>{{this.description}}</td>
+                <td>{{this.price}}</td>
+                <td>{{this.thumbnails}}</td>
+                <td>{{this.quantity}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>

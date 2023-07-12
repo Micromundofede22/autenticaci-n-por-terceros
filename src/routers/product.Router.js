@@ -8,17 +8,16 @@ productRouter.get("/", async (req, res) => {
     try {
         let limite = req.query.limite ? req.query.limite : 10
         let page = req.query.page ? req.query.page : 1
-        const status = req.query.status 
-        const category = req.query.category 
+        const status = req.query.status
+        const category = req.query.category
 
 
         const result = await productModel.paginate(
-            (status && category)
-                ? { status: status, category: category}
+            (status && category) //filtros
+                ? { status: status, category: category }
                 : {}
-
             ,
-            (limite && page)
+            (limite && page) //limites y paginas
                 ? { limit: limite, page: page }
                 : { page: 1 }
         )
@@ -44,7 +43,7 @@ productRouter.get("/", async (req, res) => {
             prevLink: result.prevLink,
             nextLink: result.nextLink
         })
-        // const result= await productModel.find().limit(limite).lean().exec()
+        
         req.app.get('socketio').emit('updateProducts', await productModel.find().limit(limite))
     } catch (err) {
         res.status(500).json({ status: "error", error: err.message })

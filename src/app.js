@@ -24,7 +24,7 @@ app.use(express.static("./public"))
 app.use("/post", multerRouter)
 app.use('/api/products', productRouter)
 app.use('/api/carts', cartRouter)
-app.use("/products", viewsRouter)
+app.use("/views", viewsRouter)
 app.use("/chat", routerChat)
 
 try {
