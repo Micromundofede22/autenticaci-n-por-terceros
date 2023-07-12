@@ -2,6 +2,7 @@ import { Router } from "express";
 import { productModel } from "../dao/models/product.model.js";
 import { cartsModel } from "../dao/models/cart.model.js";
 
+
 const viewsRouter = Router()
 
 
