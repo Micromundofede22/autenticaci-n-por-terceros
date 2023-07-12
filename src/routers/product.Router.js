@@ -8,6 +8,7 @@ productRouter.get("/", async (req, res) => {
     try {
         let limite = req.query.limite ? req.query.limite : 10
         let page = req.query.page ? req.query.page : 1
+        const sort= req.query.sort || ""
         const status = req.query.status
         const category = req.query.category
 
@@ -18,7 +19,7 @@ productRouter.get("/", async (req, res) => {
                 : {}
             ,
             (limite && page) //limites y paginas
-                ? { limit: limite, page: page }
+                ? { limit: limite, page: page, sort: {price: Number(sort)}}
                 : { page: 1 }
         )
 
