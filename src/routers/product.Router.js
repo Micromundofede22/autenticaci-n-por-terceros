@@ -6,9 +6,9 @@ const productRouter = Router()
 // busqueda por query
 productRouter.get("/", async (req, res) => {
     try {
-        let limite = req.query.limite ? req.query.limite : 10
-        let page = req.query.page ? req.query.page : 1
-        const sort= req.query.sort || ""
+        const limite = req.query.limite || 10
+        const page = req.query.page || 1
+        const sort = req.query.sort || 0
         const status = req.query.status
         const category = req.query.category
 
@@ -18,9 +18,10 @@ productRouter.get("/", async (req, res) => {
                 ? { status: status, category: category }
                 : {}
             ,
-            (limite && page) //limites y paginas
-                ? { limit: limite, page: page, sort: {price: Number(sort)}}
-                : { page: 1 }
+
+            (limite || page && sort)
+                ? { limit: limite, page: page, sort: { price: Number(sort) } }
+                : {limit:limite, page:page}
         )
 
         result.prevLink = result.hasPrevPage
@@ -44,7 +45,7 @@ productRouter.get("/", async (req, res) => {
             prevLink: result.prevLink,
             nextLink: result.nextLink
         })
-        
+
         req.app.get('socketio').emit('updateProducts', await productModel.find().limit(limite))
     } catch (err) {
         res.status(500).json({ status: "error", error: err.message })
