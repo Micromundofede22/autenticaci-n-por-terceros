@@ -1,19 +1,18 @@
-import { cartsModel } from "../../dao/models/cart.model"
 
 
-const addLink =async function  (id) {
+
+
+const addLink = async (_id)=> {
     try{
-    console.log(id)
-    cart = await cartsModel.findById("64adc7bc4952280f6310357d")
-    cart.products.push({ product: id, quantity: 1 })
-    await cartsModel.updateOne({ _id: "64adc7bc4952280f6310357d" }, cart)
-    const result = await cartsModel.findById("64adc7bc4952280f6310357d")
-    res.status(200).json({ status: "success", payload: result })
-}catch(err){
-    console.log(err)
-}
+        const cart= "64aeb5dab4b5c77a43a97fdb"
+        const res= await fetch(`/api/carts/${cart}/product/${_id}`, {
+            method: "POST",
+        })
+        const result= await res.json()
+        if(result.status === "error") throw new Error (result.error) //si el json, que ahora esta
+        //  dentro de la const result, da error en su status, me tira un nuevo error y throw detiene la
+        // ejecucion siguiente 
+    }catch(error){
+        console.log(error)
     }
-
-const button= document.getElementById("button")
-button.addEventListener("click", addLink())
-
+}
