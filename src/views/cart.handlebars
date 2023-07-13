@@ -1,21 +1,25 @@
 <div>
-    <table>
+    
+
+    <table class="table table-dark">
         <thead>
             <tr>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Precio</th>
-                <th>Fotografía</th>
-                <th>Cantidad</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Precio</th>
+                <th scope="col">Fotografías</th>
+                <th scope="col">Cantidad</th>
             </tr>
         </thead>
         <tbody>
-            {{#each cartProducts}}
+            {{#each cartProducts.products}}
+            {{!-- dentro de cartProducts, recorro products, y luego entro a cada prop instanciando
+            this.product.propiedad --}}
             <tr>
-                <td>{{this.title}}</td>
-                <td>{{this.description}}</td>
-                <td>{{this.price}}</td>
-                <td>{{this.thumbnails}}</td>
+                <td>{{this.product.title}}</td>
+                <td>{{this.product.description}}</td>
+                <td>{{this.product.price}}</td>
+                <td>{{this.product.thumbnails}}</td>
                 <td>{{this.quantity}}</td>
             </tr>
             {{/each}}

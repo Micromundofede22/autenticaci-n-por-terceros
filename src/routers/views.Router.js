@@ -29,12 +29,13 @@ viewsRouter.get("/products", async (req, res) => {
 
 viewsRouter.get("/cart/:cid", async(req,res)=>{
     try {
-        const cid= req.params.cid
-        const cart= await cartsModel.findById(cid).populate("products.product").lean()
-        const cartProducts= cart.products
+        const cid= req.params.cid;
+        const cart= await cartsModel.findById(cid).populate("products.product") //muestra carrito con su id y products
+        console.log(cart)
+        const cartProducts= { products: cart.products.map(prod=> prod.toObject()) } //creo un objeto con la prop products, y ahi mapeo el products de cart, pero esta vez transformados objetos, asi puedo acceder a sus propiedades en la vista  
+        console.log(cartProducts.products)
         
-        
-        res.render("cart", cartProducts)
+        res.render("cart", {cartProducts, lean:true})
     } catch (error) {
         res.render("Error del servidor")
     }
