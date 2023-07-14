@@ -7,10 +7,14 @@ import viewsRouter from "./routers/views.Router.js"
 import mongoose from "mongoose"
 import multerRouter from "./routers/multer.Router.js"
 import routerChat from "./routers/chat.Router.js"
+import sessionRouter from "./routers/session.Router.js"
 import { messagesModel } from "./dao/models/message.model.js";
+import session from "express-session";
+
 
 
 const app = express()
+
 
 //configuracion del motor de plantillas
 app.engine('handlebars', handlebars.engine())
@@ -21,11 +25,20 @@ app.use(express.json()) //para que mi servidor pueda recibir json del cliente
 app.use(express.urlencoded({ extended: true })) //para que mi servidor pueda recibir json que llegan por formulario desde el cliente
 app.use(express.static("./public"))
 
+app.use("/user", sessionRouter)
 app.use("/post", multerRouter)
 app.use('/api/products', productRouter)
 app.use('/api/carts', cartRouter)
 app.use("/views", viewsRouter)
 app.use("/chat", routerChat)
+
+
+app.use(session({
+    secret: "palabraclave",
+    resave: true
+}))
+
+
 
 try {
     await mongoose.connect("mongodb+srv://fedecoder:fedecoder@cluster0.irwwxpb.mongodb.net/ecommers")
