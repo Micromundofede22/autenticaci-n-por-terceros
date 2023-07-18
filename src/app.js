@@ -9,7 +9,11 @@ import multerRouter from "./routers/multer.Router.js"
 import routerChat from "./routers/chat.Router.js"
 import sessionRouter from "./routers/session.Router.js"
 import { messagesModel } from "./dao/models/message.model.js";
-import session from "express-session";
+
+import session, { Session } from "express-session"; //DEPENDENCIA SESSION (guarda cookie)
+import MongoStore from "connect-mongo"; //DEPENDENCIA guardar datos en MONGO
+import passport from "passport";
+import initializePassport from "./config/passport.config.js";
 
 
 
@@ -22,21 +26,39 @@ app.set('views', './views')
 app.set('view engine', 'handlebars')
 
 app.use(express.json()) //para que mi servidor pueda recibir json del cliente
-app.use(express.urlencoded({ extended: true })) //para que mi servidor pueda recibir json que llegan por formulario desde el cliente
+app.use(express.urlencoded({ extended: true })) //para que mi servidor pueda recibir json que llegan por formulario por vista desde el cliente
 app.use(express.static("./public"))
 
-app.use("/user", sessionRouter)
-app.use("/post", multerRouter)
-app.use('/api/products', productRouter)
-app.use('/api/carts', cartRouter)
-app.use("/views", viewsRouter)
-app.use("/chat", routerChat)
 
 
-app.use(session({
+app.use("/session", sessionRouter) //ruta crea session
+app.use("/views", viewsRouter) //ruta html Onwire products y cart
+app.use("/chat", routerChat) //ruta html Onwire chat
+
+app.use("/post", multerRouter) //ruta multer carga archivos
+app.use('/api/products', productRouter) //ruta data Onwire
+app.use('/api/carts', cartRouter) //ruta data Onwire
+
+
+
+// MIDLEWARE CREA SESSION Y GUARDA EN DB MONGO
+app.use(session({ //SESSION ES UN OBJETO
+    store: MongoStore.create({ //ALMACENA EN MONGO
+        mongoUrl: "mongodb+srv://fedecoder:fedecoder@cluster0.irwwxpb.mongodb.net",
+        dbName: "ecommers",
+        mongoOptions: {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        }
+    }),
     secret: "palabraclave",
-    resave: true
+    resave: true,
+    saveUninitialized: true
 }))
+// CONFIGURACION PASSPORT 
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 
 
@@ -54,14 +76,10 @@ try {
         socket.emit('logs', messages) //solo emite a ese cliente el historial, (no a todos, sino se repetiria el historial)
         socket.on('message', data => { //cuando cliente me haga llegar un mensaje, lo pusheo
             messages.push(data);
-
             messagesModel.create(messages);
             io.emit('logs', messages) // y el servidor io emite a todos el historial completo
         })
-
     })
-
-   
 } catch (err) {
     console.log(err.message)
 }
