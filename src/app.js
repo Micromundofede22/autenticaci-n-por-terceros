@@ -10,7 +10,7 @@ import routerChat from "./routers/chat.Router.js"
 import sessionRouter from "./routers/session.Router.js"
 import { messagesModel } from "./dao/models/message.model.js";
 
-import session, { Session } from "express-session"; //DEPENDENCIA SESSION (guarda cookie)
+import session from "express-session"; //DEPENDENCIA SESSION (guarda cookie)
 import MongoStore from "connect-mongo"; //DEPENDENCIA guardar datos en MONGO
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
