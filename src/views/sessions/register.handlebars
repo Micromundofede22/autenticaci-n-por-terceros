@@ -1,16 +1,35 @@
-<h1>Registrar Usuarios</h1>
-{{!-- formulario redirige a la ruta post session/register del router, donde esta la logica   --}}
-{{!-- post se puede por html, delete solo por js --}}
-<form action="/session/register" method="post"> 
+<div class="row justify-content-center">
 
-    First Name: <input type="text" name="first_name"><br>
-    Last Name: <input type="text" name="last_name"><br>
-    Email: <input type="text" name="email"><br>
-    Age: <input type="text" name="age"><br>
-    Password: <input type="text" name="password"><br>
+    <h2 class="row justify-content-center">Registrarse</h2>
+{{!-- action register me redirecciona a esa ruta, haciendo un post --}}
+    <form class="w-25 " action="/register" method="post">  
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Nombre</label>
+            <input type="text" name="first_name" class="form-control" id="exampleInputPassword1">
+        </div>
 
-    <br>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Apellido</label>
+            <input type="text" name="last_name" class="form-control" id="exampleInputPassword1">
+        </div>
 
-    <input type="submit" value="Crear">
 
-</form>
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <div id="emailHelp" class="form-text">Nunca compartiremos tu correo electrónico con nadie</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Edad</label>
+            <input type="text" name="age" class="form-control" id="exampleInputPassword1">
+        </div>
+
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Contraseña</label>
+            <input type="text" name="password" class="form-control" id="exampleInputPassword1">
+        </div>
+
+        <button type="submit" class="btn btn-success">Crear</button>
+    </form>
+</div>

@@ -29,7 +29,7 @@ const initializePassport = () => {                                //ESTO LO USAM
             const result = await UserModel.create(newUser)
             return done(null, result)                               //NO HAY ERROR(NULL) Y RETORNO EL USUARIO CREADO
         } catch (err) {
-            return done('error al obtener el user')                 //1ER ARGUMENTO DE DONE ES UN ERROR
+            // return done('error al obtener el user')                 //1ER ARGUMENTO DE DONE ES UN ERROR
         }
     }))
 
@@ -39,12 +39,12 @@ const initializePassport = () => {                                //ESTO LO USAM
     }, async (username, password, done) => {
         try {
             const user = await UserModel.findOne({ email: username }) //busca el email
-            if (!user) {
+            if (!user) {   //si no esta logueado el user, tira error
                 return done(null, false)
             }
+            if (!isValidPassword(user, password)) return done(null, false) //si la contraseña es invalida retorna error
+            return done(null, user) //si existe user y contraseña ok, error null, y me tira el user
 
-            if (!isValidPassword(user, password)) return done(null, false)
-            return done(null, user)
         } catch (err) {
 
         }
@@ -58,7 +58,6 @@ const initializePassport = () => {                                //ESTO LO USAM
         const user = await UserModel.findById(id)
         done(null, user)
     })
-
 }
 
 export default initializePassport

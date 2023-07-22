@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { productModel } from "../dao/models/product.model.js";
 import { cartsModel } from "../dao/models/cart.model.js";
-
+import passport from "passport";
 
 const viewsRouter = Router()
 
@@ -21,22 +21,23 @@ viewsRouter.get("/products", async (req, res) => {
             ? `/views/products?page=${products.nextPage}&limit=${limit}`
             : ""
 
+
         res.render("home", products);
     } catch (err) {
         res.render("Error del servidor")
     }
 })
 
-viewsRouter.get("/cart/:cid", async(req,res)=>{
+viewsRouter.get("/cart/:cid", async (req, res) => {
     try {
-        const cid= req.params.cid;
-        const cart= await cartsModel.findById(cid).populate("products.product") //muestra carrito con su id y products
+        const cid = req.params.cid;
+        const cart = await cartsModel.findById(cid).populate("products.product") //muestra carrito con su id y products
         console.log(cart)
-        const cartProducts= { products: cart.products.map(prod=> prod.toObject()) } //creo un objeto con la prop products, y ahi mapeo el products de cart, pero esta vez transformados objetos, asi puedo acceder a sus propiedades en la vista
-          
+        const cartProducts = { products: cart.products.map(prod => prod.toObject()) } //creo un objeto con la prop products, y ahi mapeo el products de cart, pero esta vez transformados objetos, asi puedo acceder a sus propiedades en la vista
+
         console.log(cartProducts.products)
-        
-        res.render("cart", {cartProducts, lean:true})
+
+        res.render("cart", { cartProducts, lean: true })
     } catch (error) {
         res.render("Error del servidor")
     }
