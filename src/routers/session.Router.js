@@ -4,15 +4,18 @@ import passport from "passport";
 
 const router = Router()
 
-const authAdmin = (req, res, next) => {
-    if (
-        req.body.email === "adminCoder@coder.com" &&
-        req.body.password === "adminCod3r123"
-    ) {
-        return next()
-    }
-    return res.status(401).json({ status: "success", message: "error, usted no es admin" })
-}
+
+// const authAdmin = (req, res, next) => {
+//     if (
+//         req.body.email === "adminCoder@coder.com" &&
+//         req.body.password === "adminCod3r123"
+//     ) {
+//         return next()
+//     }
+//     return res.status(401).json({ status: "success", message: "error, usted no es admin" })
+// thessssssssssssssssssss
+// }
+
 
 // Vista de Login
 router.get('/', (req, res) => {
@@ -20,17 +23,12 @@ router.get('/', (req, res) => {
 })
 
 // API para login
-router.post('/login',                            //midleware condicional, si es admin, autentica authadmin por código, 
-    authAdmin
-        ? async (req, res) => {
-            res.redirect('/views/products')
-        }
-        : passport.authenticate('loginPass', {          //si es otro mail, authentica por passport en la base de datos
+router.post('/login', passport.authenticate('loginPass', {          //si es otro mail, authentica por passport en la base de datos
             failureRedirect: '/failLogin'
         }),
     async (req, res) => {
         res.redirect('/views/products')
-        
+
     }
 )
 

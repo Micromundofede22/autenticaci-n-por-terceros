@@ -51,7 +51,8 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 
-app.use("/", sessionRouter) //ruta crea session
+
+ //ruta crea session
 app.use("/views", viewsRouter) //ruta html Onwire products y cart
 app.use("/chat", routerChat) //ruta html Onwire chat
 
