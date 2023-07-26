@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { productModel } from "../dao/models/product.model.js";
 import { cartsModel } from "../dao/models/cart.model.js";
-import UserModel from "../dao/models/user.model.js";
+
 
 
 const viewsRouter = Router()
@@ -11,11 +11,7 @@ viewsRouter.get("/products", async (req, res) => {
     try {
         const page = req.query.page || 1
         const limit = req.query.limit || 10
-        
-        const session = req.session //1.obtengo la session
-        console.log(session)
-        const id = session.passport.user //2.obtengo el id de la session guardad en passport
-        const user = await UserModel.findById(id) //3. busco el usuario por su id session
+
 
         const products = await productModel.paginate({}, { page, limit, lean: true }) //lean pasa datos con formato de mongo a objetos de js
         products.prevLink = products.hasPrevPage                                      //link pagina previa, solo si hay pag previa
@@ -26,21 +22,10 @@ viewsRouter.get("/products", async (req, res) => {
             ? `/views/products?page=${products.nextPage}&limit=${limit}`
             : ""
 
-        res.render("home",
-            (user && (user.role === "user"))
-                ? {
-                    username: user.first_name.toUpperCase(),
-                    userLastName: user.last_name.toUpperCase(),
-                    role: user.role.toUpperCase(),
-                    products: products
-                }
-                : {
-                    username: "admin",
-                    userLastName: "coder",
-                    role: "admin",
-                    products: products
-                }
-        );
+
+        const user = req.session.user
+        res.render("home", {products, user});
+        
     } catch (err) {
         res.render("Error del servidor")
     }

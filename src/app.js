@@ -12,8 +12,8 @@ import { messagesModel } from "./dao/models/message.model.js";
 
 import session from "express-session"; //DEPENDENCIA SESSION (guarda cookie)
 import MongoStore from "connect-mongo"; //DEPENDENCIA guardar datos en MONGO
-import passport from "passport";
-import initializePassport from "./config/passport.config.js";
+
+
 
 
 
@@ -45,14 +45,12 @@ app.use(session({ //SESSION ES UN OBJETO
     saveUninitialized: true
 }))
 
-// CONFIGURACION PASSPORT 
-initializePassport()
-app.use(passport.initialize())
-app.use(passport.session())
+
 
 
 
  //ruta crea session
+ app.use("/", sessionRouter)
 app.use("/views", viewsRouter) //ruta html Onwire products y cart
 app.use("/chat", routerChat) //ruta html Onwire chat
 
