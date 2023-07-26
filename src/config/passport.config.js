@@ -42,7 +42,7 @@ const initializePassport = () => {                                //ESTO LO USAM
             if (!user) {   //si no esta logueado el user, tira error
                 return done(null, false)
             }
-            if (!isValidPassword(user, password)) return done(null, false) //si la contraseña es invalida retorna error
+            if (!isValidPassword(user, password )) return done(null, false) //si la contraseña es invalida retorna error
             return done(null, user) //si existe user y contraseña ok, error null, y me tira el user
 
         } catch (err) {
