@@ -8,7 +8,9 @@ const userSchema = new mongoose.Schema({
     email: String,
     age: Number,
     password: String,
-    role: {type: String, default: "user"}
+    role: {type: String, default: "user"},
+    servicio: {type: String, required: false},
+    photograph: {type: String, required: false}
 })
 
 mongoose.set("strictQuery", false)

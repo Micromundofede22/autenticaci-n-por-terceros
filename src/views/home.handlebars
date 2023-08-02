@@ -2,7 +2,8 @@
 
 <div class="row justify-content-center">
     <div class="col-10 ">
-        
+        <h3>Bienvenido: {{username}}</h3>
+        <h4>Rol: {{role}}</h4>
     </div>
 
     <div class="col-2 ">
@@ -27,7 +28,7 @@
             </tr>
         </thead>
         <tbody>
-            {{#each docs}}
+            {{#each products.docs}}
             <tr>
                 <td>{{this.title}}</td>
                 <td>{{this.description}}</td>

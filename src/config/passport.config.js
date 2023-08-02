@@ -2,8 +2,12 @@ import passport from "passport" //traigo libreria
 import local from 'passport-local' //traigo estrategia de la libreria
 import UserModel from '../dao/models/user.model.js'
 import { createHash, isValidPassword } from '../utils.js'
+import GitHubStrategy from "passport-github2"
+import { OAuth2Strategy as GoogleStrategy } from "passport-google-oauth"
+
 
 const LocalStrategy = local.Strategy
+
 
 const initializePassport = () => {                                //ESTO LO USAMOS COMO MIDLEWARE
 
@@ -42,13 +46,64 @@ const initializePassport = () => {                                //ESTO LO USAM
             if (!user) {   //si no esta logueado el user, tira error
                 return done(null, false)
             }
-            if (!isValidPassword(user, password )) return done(null, false) //si la contraseña es invalida retorna error
+            if (!isValidPassword(user, password)) return done(null, false) //si la contraseña es invalida retorna error
             return done(null, user) //si existe user y contraseña ok, error null, y me tira el user
-
         } catch (err) {
 
         }
     }))
+
+    passport.use("github", new GitHubStrategy({
+        clientID: "Iv1.d5fe56e994ba152a",                                  //cliente lo saco cuando creo la app en git
+        clientSecret: "3ae4422147ceb4569eeec50d72d28d2a78a1e29a",          //llave la saco de la app git
+        callbackURL: "http://localhost:8080/githubcallback"                //la misma url que puse en git
+    }, async (accessToken, refreshToken, profile, done) => {
+        console.log(profile)
+        try {
+            const user = await UserModel.findOne({ email: profile._json.email }) //profile tiene una prop json, donde se encuentra toda la info
+            if (user) return done(null, user)                                    //si ya existe el email no lo grabo en la db, y done retorna el user al endpoin githubcallback que esta en el session router
+            const newUser = await UserModel.create({                            //si no existe, lo creo en la db
+                first_name: profile._json.name,
+                email: profile._json.email,
+                password: " ",                                                   //ya que el model de user es obligatorio
+                role: "user",
+                servicio: "GitHub"
+            })
+            return done(null, newUser)
+        } catch (err) {
+            return done(`Error to login with GitHub => ${err.message}`)
+        }
+    }))
+
+
+    passport.use("googlePass", new GoogleStrategy({
+        clientID: "677009444232-m39194megnhvte4295dih3j2hhjit2cf.apps.googleusercontent.com",
+        clientSecret: "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",
+        callbackURL: "http://localhost:8080/googlecallback"
+    },
+        async (accessToken, refreshToken, profile, done) => {
+            console.log(profile)
+            try {
+                const user = await UserModel.findOne({ email: profile._json.email }) //profile tiene una prop json, donde se encuentra toda la info
+                if (user) return done(null, user)                                    //si ya existe el email no lo grabo en la db, y done retorna el user al endpoin githubcallback que esta en el session router
+                const newUser = await UserModel.create({                            //si no existe, lo creo en la db
+                    first_name: profile._json.name,
+                    email: profile._json.email,
+                    password: " ",                                                   //ya que el model de user es obligatorio
+                    role: "user",
+                    servicio: "Google",
+                    photograph: profile._json.picture
+                })
+                // console.log(newUser)
+                return done(null, newUser)
+            } catch (err) {
+                return done(`Error to login with Google => ${err.message}`)
+            }
+        }
+    )
+    );
+
+
 
     passport.serializeUser((user, done) => {                 //passport solo guarda en la session el id, no todos los datos del user, ya q esos van a la db
         done(null, user._id)

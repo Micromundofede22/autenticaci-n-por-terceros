@@ -2,7 +2,6 @@ import { Router } from "express";
 import { productModel } from "../dao/models/product.model.js";
 import { cartsModel } from "../dao/models/cart.model.js";
 
-import UserModel from "../dao/models/user.model.js"
 
 
 const viewsRouter = Router()
@@ -14,8 +13,6 @@ viewsRouter.get("/products", async (req, res) => {
         const page = req.query.page || 1
         const limit = req.query.limit || 10
         
-        
-
         const products = await productModel.paginate({}, { page, limit, lean: true }) //lean pasa datos con formato de mongo a objetos de js
 
         products.prevLink = products.hasPrevPage //link pagina previa, solo si hay pag previa
@@ -26,13 +23,16 @@ viewsRouter.get("/products", async (req, res) => {
             ? `/views/products?page=${products.nextPage}&limit=${limit}`
             : ""
 
+            const username= (req.user.first_name).toUpperCase()
+            const role= (req.user.role).toUpperCase()
+            
 
-        res.render("home", products);
+        res.render("home", {products:products, username, role});
     } catch (err) {
         res.render("Error del servidor")
     }
 })
-
+ 
 
 
 viewsRouter.get("/cart/:cid", async (req, res) => {
@@ -49,10 +49,6 @@ viewsRouter.get("/cart/:cid", async (req, res) => {
         res.render("Error del servidor")
     }
 })
-
-
-
-
 
 
 
